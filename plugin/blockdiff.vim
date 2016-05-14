@@ -62,38 +62,38 @@ set cpo&vim
 
 " ---------- Code -------------------------------------------------------------
 fun! BlockDiff_GetBlock1() range
-  let s:regd = @@
-  " copy selected block into unnamed register
-  exe a:firstline . "," . a:lastline . "y"
+  let s:regd = @r
+  " copy selected block into register r
+  exe a:firstline . "," . a:lastline . 'y r'
   " save block for later use in variable
-  let s:block1 = @@
-  " restore unnamed register
-  let @@ = s:regd
+  let s:block1 = @r
+  " restore register r
+  let @r = s:regd
 endfun
 
 fun! BlockDiff_GetBlock2() range
-  let s:regd = @@
-  exe a:firstline . "," . a:lastline . "y"
+  let s:regd = @r
+  exe a:firstline . "," . a:lastline . 'y r'
 
   " Open new tab, paste second selected block
   tabnew
-  normal P
+  normal "rP
   " to prevent 'No write since last change' message:
   se buftype=nowrite
   diffthis
 
   " vsplit left for first selected block
   lefta vnew
-  " copy first block into unnamed register & paste
-  let @@ = s:block1
-  normal P
+  " copy first block into register r & paste
+  let @r = s:block1
+  normal "rP
   se buftype=nowrite
 
   " start diff
   diffthis
 
   " restore unnamed register
-  let @@ = s:regd
+  let @r = s:regd
 endfun
 
 
